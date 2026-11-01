@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demo LMS</title>
+<!-- वेबसाइट वाला कोड - वर्ज़न 5 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -14,17 +15,19 @@
   header button{background:#fff;color:#2563eb;border:0;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer}
   main{max-width:960px;margin:24px auto;padding:0 16px}
   .narrow{max-width:420px;margin:16px auto}
-  .card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:16px}
+  .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:16px}
+  .card h3{margin-bottom:8px}
   .tabs{display:flex;margin-bottom:18px;border-bottom:2px solid #e2e8f0}
   .tabs button{flex:1;background:none;border:0;padding:10px;font-size:16px;cursor:pointer;color:#64748b}
   .tabs button.active{color:#2563eb;border-bottom:3px solid #2563eb;font-weight:600}
   label{display:block;font-size:14px;margin:12px 0 4px;color:#475569}
-  input,textarea,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
+  input,textarea,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;background:#fff}
   textarea{min-height:80px;resize:vertical}
   .btn{display:inline-block;margin-top:16px;padding:11px 18px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none}
   .btn.full{width:100%;text-align:center}
   .btn.green{background:#16a34a}.btn.red{background:#dc2626}.btn.gray{background:#64748b}
   .btn.sm{padding:7px 12px;font-size:13px;margin-top:0}
+  .btn:disabled{opacity:.6}
   .back{background:none;border:0;color:#2563eb;font-size:15px;cursor:pointer;margin-bottom:12px}
   .msg{margin-top:14px;padding:10px;border-radius:8px;font-size:14px}
   .msg.err{background:#fee2e2;color:#b91c1c}
@@ -37,7 +40,6 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
   .tile{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);cursor:pointer;transition:transform .1s}
   .tile:hover{transform:translateY(-2px)}
-  .tile.off{opacity:.55;cursor:default}
   .tile h3{font-size:16px;margin-bottom:6px}
   .tile p{font-size:14px;color:#64748b}
   .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#e2e8f0;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:36px}
@@ -62,14 +64,33 @@
   .upiline code{background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:15px}
   .bigamt{font-size:28px;font-weight:800;color:#16a34a;margin:4px 0}
   .utr{font-size:20px;letter-spacing:2px;text-align:center}
-  .paycard{border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px}
   .paycard .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .paycard .utrbig{font-family:monospace;font-size:18px;font-weight:700;letter-spacing:1px;background:#f1f5f9;padding:6px 10px;border-radius:6px;display:inline-block;margin:8px 0}
+  .utrbig{font-family:monospace;font-size:18px;font-weight:700;letter-spacing:1px;background:#f1f5f9;padding:6px 10px;border-radius:6px;display:inline-block;margin:8px 0}
 
   /* चैप्टर टैब */
-  .ctabs{display:flex;gap:8px;margin-bottom:14px}
-  .ctabs button{flex:1;padding:11px;border:1px solid #cbd5e1;background:#fff;border-radius:10px;font-size:15px;cursor:pointer;color:#475569}
+  .ctabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .ctabs button{flex:1 1 30%;min-width:90px;padding:10px 6px;border:1px solid #cbd5e1;background:#fff;border-radius:10px;font-size:14px;cursor:pointer;color:#475569}
   .ctabs button.active{background:#2563eb;color:#fff;border-color:#2563eb;font-weight:600}
+
+  /* होमवर्क, टेस्ट, डाउट */
+  .hw{border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px}
+  .hw h4{font-size:16px}
+  details summary{cursor:pointer;color:#2563eb;font-size:14px}
+  .q{border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px}
+  .qt{font-weight:600;margin-bottom:8px;white-space:pre-line}
+  .opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin:6px 0;cursor:pointer;font-size:15px;color:#1e293b}
+  .opt input{width:auto;margin:0;flex-shrink:0}
+  .opt.right{background:#dcfce7;border-color:#16a34a}
+  .opt.wrong{background:#fee2e2;border-color:#dc2626}
+  .exp{margin-top:8px;font-size:14px;color:#475569;background:#f8fafc;padding:8px;border-radius:8px;white-space:pre-line}
+  .score{background:#eff6ff;border-radius:12px;padding:16px;text-align:center;margin-bottom:14px}
+  .score .big{font-size:32px;font-weight:800;color:#2563eb}
+  .doubt{border-bottom:1px solid #e2e8f0;padding:12px 0}
+  .doubt:last-child{border-bottom:0}
+  .doubt p{margin-bottom:4px}
+  .ans{background:#f0fdf4;border-left:3px solid #16a34a;padding:8px 10px;border-radius:6px;margin-top:6px}
+  .imgview{background:#f1f5f9;border-radius:12px;padding:8px;margin:12px 0;text-align:center}
+  .imgview img{max-width:100%;border-radius:8px}
 
   /* वीडियो प्लेयर */
   .vp{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;user-select:none;-webkit-user-select:none}
@@ -90,16 +111,17 @@
   .vp.fs,.vp:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
   .vp.fs{position:fixed;inset:0;z-index:100}
 
-  /* अपना PDF व्यूअर */
-  .pv{display:flex;flex-direction:column;height:80vh;height:80dvh;background:#525659;border-radius:12px;overflow:hidden;user-select:none;-webkit-user-select:none}
+  /* अपना PDF व्यूअर (स्मूथ: सिर्फ़ दिखने वाले पन्ने बनते हैं) */
+  .pv{display:flex;flex-direction:column;height:80vh;height:80dvh;background:#525659;border-radius:12px;overflow:hidden;user-select:none;-webkit-user-select:none;margin-top:8px}
   .pv .pbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#1e293b;color:#fff;flex-shrink:0}
   .pv .pbar button{background:rgba(255,255,255,.12);border:0;color:#fff;font-size:17px;width:38px;height:34px;border-radius:8px;cursor:pointer}
   .pv .pbar .pinfo{font-size:14px;margin:0 6px;white-space:nowrap}
   .pv .pbar .sp2{flex:1}
-  .pv .pages{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 0;touch-action:pan-x pan-y}
-  .pv .pages canvas{display:block;margin:0 auto 10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .pv .pages{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 8px;touch-action:pan-x pan-y}
+  .pv .pg{margin:0 auto 10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .pv .pg canvas{display:block;width:100%;height:100%}
   .pv .pmsg{color:#fff;text-align:center;padding:40px 16px;font-size:15px}
-  .pv.fs,.pv:fullscreen{border-radius:0;width:100vw;height:100vh;height:100dvh}
+  .pv.fs,.pv:fullscreen{border-radius:0;width:100vw;height:100vh;height:100dvh;margin:0}
   .pv.fs{position:fixed;inset:0;z-index:100}
   @media print{body{display:none}}
 </style>
@@ -136,13 +158,14 @@ async function api(action, data = {}) {
     if (r.relogin) { localStorage.removeItem('token'); USER = null; authView('दोबारा लॉगिन करें'); throw new Error('relogin'); }
     return r;
   } catch (e) {
-    if (e.message !== 'relogin') alert('नेटवर्क में दिक्कत है, फिर से कोशिश करें');
+    if (e.message !== 'relogin') { e.message = 'नेटवर्क में दिक्कत है, फिर से कोशिश करें'; }
     throw e;
   } finally { if (--busy <= 0) { busy = 0; $('loader').classList.add('hidden'); } }
 }
 
 function msg(id, text, ok) { const m = $(id); if (m) { m.className = 'msg ' + (ok ? 'ok' : 'err'); m.textContent = text; } }
 const backBtn = (fn = 'home()') => `<button class="back" onclick="${fn}">← वापस</button>`;
+function fail(e) { if (e && e.message !== 'relogin') alert(e.message); }
 
 async function copyText(t, btn) {
   try { await navigator.clipboard.writeText(t); }
@@ -186,17 +209,21 @@ function showTab(t) {
 
 async function doLogin(e) {
   e.preventDefault();
-  const r = await api('login', { email: $('lEmail').value, password: $('lPass').value });
-  if (r.ok) { localStorage.setItem('token', r.token); USER = r.user; home(); }
-  else msg('amsg', r.error, false);
+  try {
+    const r = await api('login', { email: $('lEmail').value, password: $('lPass').value });
+    if (r.ok) { localStorage.setItem('token', r.token); USER = r.user; home(); }
+    else msg('amsg', r.error, false);
+  } catch (err) { msg('amsg', err.message, false); }
 }
 
 async function doSignup(e) {
   e.preventDefault();
   const email = $('sEmail').value;
-  const r = await api('signup', { name: $('sName').value, email, phone: $('sPhone').value, password: $('sPass').value });
-  if (r.ok) { showTab('login'); $('lEmail').value = email; msg('amsg', 'अकाउंट बन गया! अब लॉगिन करें।', true); }
-  else msg('amsg', r.error, false);
+  try {
+    const r = await api('signup', { name: $('sName').value, email, phone: $('sPhone').value, password: $('sPass').value });
+    if (r.ok) { showTab('login'); $('lEmail').value = email; msg('amsg', 'अकाउंट बन गया! अब लॉगिन करें।', true); }
+    else msg('amsg', r.error, false);
+  } catch (err) { msg('amsg', err.message, false); }
 }
 
 async function logout() {
@@ -211,14 +238,17 @@ function home() {
   $('logoutBtn').classList.remove('hidden');
   const roles = { student:'स्टूडेंट', teacher:'टीचर', admin:'एडमिन' };
   const tiles = {
-    student: [['📚 मेरे कोर्स','जो कोर्स आपने शुरू किए','myCourses()'], ['🔍 सभी कोर्स देखें','नए कोर्स खोजें','allCourses()']],
-    teacher: [['📚 मेरे कोर्स','अपने कोर्स देखें और एडिट करें','teacherCourses()'], ['➕ नया कोर्स बनाएँ','नया कोर्स शुरू करें','courseForm()']],
+    student: [['📚 मेरे कोर्स','जो कोर्स आपने शुरू किए','myCourses()'], ['🔍 सभी कोर्स देखें','नए कोर्स खोजें','allCourses()'],
+              ['📅 लाइव क्लास','आने वाली क्लास','myLive()']],
+    teacher: [['📥 चेक करना बाकी','होमवर्क और डाउट','inbox()'], ['📚 मेरे कोर्स','कोर्स, होमवर्क, टेस्ट, लाइव क्लास','teacherCourses()'],
+              ['➕ नया कोर्स बनाएँ','नया कोर्स शुरू करें','courseForm()'], ['📅 लाइव क्लास','आपकी आने वाली क्लास','myLive()']],
     admin:   [['💰 पेमेंट वेरीफाई','स्टूडेंट के UPI पेमेंट चेक करें','adminPayments()'], ['✅ कोर्स मंज़ूरी','टीचर के भेजे कोर्स चेक करें','pendingCourses()'],
-              ['👩‍🏫 टीचर जोड़ें','नया टीचर अकाउंट बनाएँ','teacherForm()'], ['🔍 सभी कोर्स','पब्लिश हुए कोर्स देखें','allCourses()'],
-              ['➕ अपना कोर्स बनाएँ','एडमिन भी कोर्स बना सकता है','courseForm()'], ['📚 मेरे बनाए कोर्स','','teacherCourses()']]
+              ['📥 चेक करना बाकी','सभी होमवर्क और डाउट','inbox()'], ['👩‍🏫 टीचर जोड़ें','नया टीचर अकाउंट बनाएँ','teacherForm()'],
+              ['🔍 सभी कोर्स','पब्लिश हुए कोर्स देखें','allCourses()'], ['➕ अपना कोर्स बनाएँ','एडमिन भी कोर्स बना सकता है','courseForm()'],
+              ['📚 मेरे बनाए कोर्स','','teacherCourses()'], ['📅 लाइव क्लास','सभी आने वाली क्लास','myLive()']]
   }[USER.role] || [];
   app(`<h2>नमस्ते, ${esc(USER.name)} <span class="badge">${roles[USER.role] || USER.role}</span></h2>
-    <div class="grid">${tiles.map(t => `<div class="tile ${t[2] ? '' : 'off'}" ${t[2] ? `onclick="${t[2]}"` : ''}><h3>${t[0]}</h3><p>${t[1]}</p></div>`).join('')}</div>`);
+    <div class="grid">${tiles.map(t => `<div class="tile" onclick="${t[2]}"><h3>${t[0]}</h3><p>${t[1]}</p></div>`).join('')}</div>`);
 }
 
 // ================= कोर्स कार्ड =================
@@ -231,25 +261,55 @@ function cardHtml(c, onclick, showStatus) {
 }
 
 async function allCourses() {
-  const r = await api('listCourses'); if (!r.ok) return alert(r.error);
-  app(`${backBtn()}<h2>सभी कोर्स</h2>
-    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
-                       : '<p class="muted">अभी कोई कोर्स पब्लिश नहीं हुआ है।</p>'}`);
+  try {
+    const r = await api('listCourses'); if (!r.ok) return alert(r.error);
+    app(`${backBtn()}<h2>सभी कोर्स</h2>
+      ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
+                         : '<p class="muted">अभी कोई कोर्स पब्लिश नहीं हुआ है।</p>'}`);
+  } catch (e) { fail(e); }
 }
 
 async function myCourses() {
-  const r = await api('myEnrollments'); if (!r.ok) return alert(r.error);
-  app(`${backBtn()}<h2>मेरे कोर्स</h2>
-    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
-                       : '<p class="muted">आपने अभी कोई कोर्स शुरू नहीं किया। <a href="#" onclick="allCourses();return false">कोर्स देखें</a></p>'}`);
+  try {
+    const r = await api('myEnrollments'); if (!r.ok) return alert(r.error);
+    app(`${backBtn()}<h2>मेरे कोर्स</h2>
+      ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
+                         : '<p class="muted">आपने अभी कोई कोर्स शुरू नहीं किया। <a href="#" onclick="allCourses();return false">कोर्स देखें</a></p>'}`);
+  } catch (e) { fail(e); }
+}
+
+// ================= लाइव क्लास =================
+function liveHtml(list, o = {}) {
+  if (!list || !list.length) return '<p class="muted">अभी कोई लाइव क्लास तय नहीं है।</p>';
+  const now = Date.now();
+  return list.map(l => {
+    const st = new Date(l.start).getTime(), on = now >= st - 15 * 60000 && now <= l.end;
+    const when = new Date(l.start).toLocaleString('hi-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+    const join = (on || o.teacher)
+      ? `<a class="btn ${on ? 'green' : 'gray'} sm" href="${esc(l.link)}" target="_blank" rel="noopener">${on ? '🔴 जुड़ें' : 'खोलें'}</a>`
+      : `<span class="badge">जल्द</span>`;
+    return `<div class="row"><span><b>${esc(l.title)}</b>${o.course ? `<br><span class="muted">${esc(l.course)}</span>` : ''}
+        <br><span class="muted">🕒 ${when} • ${l.duration} मिनट</span></span>
+      <span style="white-space:nowrap">${join}${o.del ? ` <button class="btn red sm" onclick="delLive('${l.id}','${l.courseId}')">हटाएँ</button>` : ''}</span></div>`;
+  }).join('');
+}
+
+async function myLive() {
+  try {
+    const r = await api('myLiveClasses'); if (!r.ok) return alert(r.error);
+    app(`${backBtn()}<h2>📅 लाइव क्लास</h2>
+      <div class="card">${liveHtml(r.live, { course: true, teacher: USER.role !== 'student' })}</div>
+      <p class="muted">क्लास शुरू होने से 15 मिनट पहले "जुड़ें" बटन आ जाएगा।</p>`);
+  } catch (e) { fail(e); }
 }
 
 // ================= कोर्स पेज =================
 let CUR = null, CUR_CH = 0;
 async function openCourse(id) {
-  const r = await api('getCourse', { courseId: id }); if (!r.ok) return alert(r.error);
+  let r;
+  try { r = await api('getCourse', { courseId: id }); } catch (e) { return fail(e); }
+  if (!r.ok) return alert(r.error);
   CUR = r;
- if (!r.pay || !r.pay.upi) r.pay = { upi: '8949536974-2@ibl', name: 'SOURAV BHATI' };
   const c = r.course;
   let action = '';
   if (!r.access && r.role === 'student') {
@@ -263,6 +323,7 @@ async function openCourse(id) {
       ${action}
       ${r.canEdit ? `<button class="btn gray" onclick="courseEditor('${c.id}')">✏️ एडिट करें</button>` : ''}
     </div>
+    ${r.access && r.live && r.live.length ? `<div class="card"><h3>📅 लाइव क्लास</h3>${liveHtml(r.live, { teacher: r.canEdit })}</div>` : ''}
     <div id="viewer"></div>
     <div class="card"><h3 style="margin-bottom:6px">चैप्टर</h3>
       ${r.chapters.length ? r.chapters.map((ch, i) => `<div class="row ch" id="ch${i}" onclick="${r.access ? `openChapter(${i})` : ''}">
@@ -274,8 +335,10 @@ async function openCourse(id) {
 }
 
 async function enroll(id) {
-  const r = await api('enrollFree', { courseId: id });
-  if (r.ok) openCourse(id); else alert(r.error);
+  try {
+    const r = await api('enrollFree', { courseId: id });
+    if (r.ok) openCourse(id); else alert(r.error);
+  } catch (e) { fail(e); }
 }
 
 // ================= UPI पेमेंट (स्टूडेंट) =================
@@ -332,14 +395,18 @@ async function sendPayment(e, cid) {
   const utr = $('utrIn').value.replace(/\s/g, '');
   if (!/^\d{12}$/.test(utr)) return msg('paymsg', 'UTR नंबर पूरे 12 अंकों का होना चाहिए', false);
   if (!confirm('UTR ' + utr + ' जमा करना है?')) return;
-  const r = await api('submitPayment', { courseId: cid, utr });
-  if (r.ok) openCourse(cid); else msg('paymsg', r.error, false);
+  try {
+    const r = await api('submitPayment', { courseId: cid, utr });
+    if (r.ok) openCourse(cid); else msg('paymsg', r.error, false);
+  } catch (err) { msg('paymsg', err.message, false); }
 }
 
 // ================= पेमेंट वेरीफाई (एडमिन) =================
 async function adminPayments() {
-  const r = await api('adminPayments'); if (!r.ok) return alert(r.error);
-  app(`${backBtn()}<h2>पेमेंट वेरीफाई</h2>
+  let r;
+  try { r = await api('adminPayments'); } catch (e) { return fail(e); }
+  if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>💰 पेमेंट वेरीफाई</h2>
     <p class="muted">अपने बैंक/UPI ऐप में UTR मिलाएँ। पैसे आए हों तो "मंज़ूर" दबाएँ, स्टूडेंट को कोर्स अपने आप मिल जाएगा।</p>
     <div style="margin-top:14px">${r.payments.map(p => `<div class="card paycard">
       <div class="top">
@@ -359,34 +426,259 @@ async function adminPayments() {
 
 async function verifyPay(pid, status) {
   if (!confirm(status === 'verified' ? 'पैसे आ गए हैं? ये पेमेंट मंज़ूर करना है?' : 'ये पेमेंट रिजेक्ट करना है?')) return;
-  const r = await api('verifyPayment', { paymentId: pid, status });
-  if (r.ok) adminPayments(); else alert(r.error);
+  try {
+    const r = await api('verifyPayment', { paymentId: pid, status: status, approve: status === 'verified' });
+    if (r.ok) adminPayments(); else alert(r.error);
+  } catch (e) { fail(e); }
 }
 
-// ================= चैप्टर देखना =================
+// ================= चैप्टर: टैब =================
+const EXTRAS = {};
+function loadExtras(chId, fresh) {
+  if (fresh || !EXTRAS[chId]) {
+    EXTRAS[chId] = api('getChapterExtras', { chapterId: chId })
+      .then(r => { if (!r.ok) throw new Error(r.error); return r; })
+      .catch(e => { delete EXTRAS[chId]; throw e; });
+  }
+  return EXTRAS[chId];
+}
+
 function openChapter(i, noScroll) {
   CUR_CH = i;
   const ch = CUR.chapters[i];
   document.querySelectorAll('.ch').forEach(el => el.classList.remove('active'));
   const el = $('ch' + i); if (el) el.classList.add('active');
-  const both = ch.video && ch.hasPdf;
+  const tabs = [];
+  if (ch.video) tabs.push(['video', '🎬 वीडियो']);
+  if (ch.hasPdf) tabs.push(['pdf', '📄 नोट्स']);
+  tabs.push(['hw', '📝 होमवर्क'], ['test', '✅ टेस्ट'], ['doubt', '💬 डाउट']);
   $('viewer').innerHTML = `<div class="card">
       <h3 style="margin-bottom:12px">${i + 1}. ${esc(ch.title)}</h3>
-      ${both ? `<div class="ctabs">
-          <button id="tabV" onclick="showPart('video')">🎬 वीडियो</button>
-          <button id="tabP" onclick="showPart('pdf')">📄 नोट्स</button></div>` : ''}
+      <div class="ctabs">${tabs.map(t => `<button id="tab_${t[0]}" onclick="showPart('${t[0]}')">${t[1]}</button>`).join('')}</div>
       <div id="partArea"></div>
     </div>`;
-  showPart(ch.video ? 'video' : 'pdf');
+  showPart(tabs[0][0]);
+  // जिस चैप्टर में होमवर्क/टेस्ट नहीं है, उसके टैब छिपा दो
+  loadExtras(ch.id).then(x => {
+    if (CUR.chapters[CUR_CH] !== ch) return;
+    if (!x.assignments.length && $('tab_hw') && !$('tab_hw').classList.contains('active')) $('tab_hw').classList.add('hidden');
+    if (!x.questions.length && $('tab_test') && !$('tab_test').classList.contains('active')) $('tab_test').classList.add('hidden');
+  }).catch(() => {});
   if (!noScroll) $('viewer').scrollIntoView({ behavior: 'smooth' });
 }
 
-function showPart(which) {
+async function showPart(which) {
   const ch = CUR.chapters[CUR_CH];
-  if ($('tabV')) { $('tabV').classList.toggle('active', which === 'video'); $('tabP').classList.toggle('active', which === 'pdf'); }
+  document.querySelectorAll('.ctabs button').forEach(b => b.classList.toggle('active', b.id === 'tab_' + which));
   stopPlayer(); stopPdf();
-  if (which === 'video') { $('partArea').innerHTML = playerHtml(); makePlayer(ch.video); }
-  else { $('partArea').innerHTML = pdfHtml(); openPdf(ch.id); }
+  const area = $('partArea'); if (!area) return;
+  if (which === 'video') { area.innerHTML = playerHtml(); makePlayer(ch.video); return; }
+  if (which === 'pdf') {
+    area.innerHTML = pdfHtml();
+    openPdfData('ch_' + ch.id, async () => {
+      const r = await api('getPdf', { chapterId: ch.id });
+      if (!r.ok) throw new Error(r.error);
+      return b64ToBytes(r.data);
+    });
+    return;
+  }
+  area.innerHTML = '<p class="muted">लोड हो रहा है...</p>';
+  let x;
+  try { x = await loadExtras(ch.id); } catch (e) { if ($('partArea')) $('partArea').innerHTML = `<p class="msg err">${esc(e.message)}</p>`; return; }
+  if (CUR.chapters[CUR_CH] !== ch || !$('partArea') || !$('tab_' + which) || !$('tab_' + which).classList.contains('active')) return;
+  $('partArea').innerHTML = which === 'hw' ? hwHtml(x) : which === 'test' ? testHtml(x) : doubtHtml(x);
+}
+
+async function reloadPart(which) {
+  const ch = CUR.chapters[CUR_CH];
+  delete EXTRAS[ch.id];
+  await showPart(which);
+}
+
+// ================= होमवर्क =================
+function fileBtns(ids, label) {
+  return (ids || []).map((id, i) => `<button class="btn sm gray" style="margin:6px 6px 0 0" onclick="viewFile('${esc(id)}')">📎 ${label}${ids.length > 1 ? ' ' + (i + 1) : ''}</button>`).join('');
+}
+
+function uploadForm(aid) {
+  return `<form onsubmit="sendHw(event,'${aid}')" style="margin-top:10px">
+    <label>अपनी कॉपी की फ़ोटो या PDF (5 तक)</label>
+    <input type="file" id="hwf_${aid}" accept="image/*,application/pdf" multiple required>
+    <button class="btn full" type="submit">📤 होमवर्क जमा करें</button></form><div id="hwmsg_${aid}"></div>`;
+}
+
+function hwHtml(x) {
+  if (!x.assignments.length) return '<p class="muted">इस चैप्टर में कोई होमवर्क नहीं है।</p>';
+  return x.assignments.map(a => {
+    let body = '';
+    if (x.canEdit) {
+      body = `<p class="muted">जमा हुए: ${a.submitted} • चेक बाकी: ${a.pending}</p>`;
+    } else if (!a.mine) {
+      body = uploadForm(a.id);
+    } else if (a.mine.status === 'checked') {
+      body = `<div class="msg ok">✅ चेक हो गया — नंबर: <b>${esc(a.mine.marks)}${a.maxMarks ? ' / ' + a.maxMarks : ''}</b>
+          ${a.mine.feedback ? `<br>💬 ${esc(a.mine.feedback)}` : ''}</div>
+        ${fileBtns(a.mine.files, 'मेरी कॉपी')}${a.mine.checkedFile ? fileBtns([a.mine.checkedFile], 'चेक की हुई कॉपी') : ''}`;
+    } else {
+      body = `<div class="msg wait">⏳ जमा हो गया (${esc(a.mine.at)}) — टीचर के चेक करने का इंतज़ार है।</div>
+        ${fileBtns(a.mine.files, 'मेरी कॉपी')}
+        <details style="margin-top:12px"><summary>दोबारा जमा करें</summary>${uploadForm(a.id)}</details>`;
+    }
+    return `<div class="hw"><h4>📝 ${esc(a.title)}</h4>
+      ${a.instructions ? `<p style="white-space:pre-line;margin:6px 0">${esc(a.instructions)}</p>` : ''}
+      <p class="muted">${a.maxMarks ? 'कुल नंबर: ' + a.maxMarks : ''}${a.due ? ' • आख़िरी तारीख: ' + esc(a.due) : ''}</p>${body}</div>`;
+  }).join('') + '<div id="fileView"></div>';
+}
+
+// फ़ोटो को छोटा करके भेजना, ताकि अपलोड जल्दी हो
+function fileToB64(file) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(file); });
+}
+function compressImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const max = 1600; let w = img.naturalWidth, h = img.naturalHeight;
+      const k = Math.min(1, max / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      res(cv.toDataURL('image/jpeg', 0.75).split(',')[1]);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('ये फ़ोटो नहीं खुल पाई, कोई दूसरी फ़ोटो चुनें')); };
+    img.src = url;
+  });
+}
+async function prepFiles(list) {
+  const out = [];
+  for (const f of Array.from(list).slice(0, 5)) {
+    if (f.type === 'application/pdf') {
+      if (f.size > 8 * 1024 * 1024) throw new Error('PDF 8 MB से छोटी होनी चाहिए');
+      out.push({ mime: 'application/pdf', data: await fileToB64(f) });
+    } else if (String(f.type).startsWith('image/')) {
+      out.push({ mime: 'image/jpeg', data: await compressImage(f) });
+    } else throw new Error('सिर्फ़ फ़ोटो या PDF चुनें');
+  }
+  return out;
+}
+
+async function sendHw(e, aid) {
+  e.preventDefault();
+  const inp = $('hwf_' + aid);
+  if (!inp || !inp.files.length) return;
+  const btn = e.submitter;
+  if (btn) { btn.disabled = true; btn.textContent = 'फ़ाइलें तैयार हो रही हैं...'; }
+  try {
+    const files = await prepFiles(inp.files);
+    if (btn) btn.textContent = 'भेजा जा रहा है...';
+    const r = await api('submitHomework', { assignmentId: aid, files });
+    if (!r.ok) throw new Error(r.error);
+    await reloadPart('hw');
+  } catch (err) {
+    msg('hwmsg_' + aid, err.message, false);
+    if (btn) { btn.disabled = false; btn.textContent = '📤 होमवर्क जमा करें'; }
+  }
+}
+
+const FILE_CACHE = {};
+async function viewFile(id, targetId) {
+  const box = $(targetId || 'fileView'); if (!box) return;
+  stopPdf();
+  box.innerHTML = '<p class="muted" style="margin-top:12px">फ़ाइल खुल रही है...</p>';
+  try {
+    let f = FILE_CACHE[id];
+    if (!f) { const r = await api('getFile', { fileId: id }); if (!r.ok) throw new Error(r.error); f = FILE_CACHE[id] = r; }
+    if (String(f.mime).indexOf('pdf') >= 0) {
+      box.innerHTML = pdfHtml();
+      openPdfData('f_' + id, async () => b64ToBytes(f.data));
+    } else {
+      box.innerHTML = `<div class="imgview"><img src="data:${esc(f.mime)};base64,${f.data}" alt=""></div>`;
+    }
+    box.scrollIntoView({ behavior: 'smooth' });
+  } catch (e) { box.innerHTML = `<p class="msg err">${esc(e.message)}</p>`; }
+}
+
+// ================= MCQ टेस्ट =================
+function testHtml(x) {
+  if (!x.questions.length) return '<p class="muted">इस चैप्टर में कोई टेस्ट नहीं है।</p>';
+  if (x.canEdit) {
+    return '<p class="muted" style="margin-bottom:10px">टीचर व्यू: सही जवाब हरे रंग में दिख रहा है</p>' +
+      x.questions.map((q, i) => `<div class="q"><p class="qt">${i + 1}. ${esc(q.q)}</p>
+        ${q.opts.map((o, j) => { const L = 'ABCD'[j]; return `<div class="opt ${L === q.correct ? 'right' : ''}">${L}. ${esc(o)}</div>`; }).join('')}
+        ${q.exp ? `<p class="exp">💡 ${esc(q.exp)}</p>` : ''}</div>`).join('');
+  }
+  return `${x.best ? `<p class="msg ok" style="margin:0 0 12px">🏆 आपका सबसे अच्छा स्कोर: ${x.best.score} / ${x.best.total} (${x.best.tries} बार दिया)</p>` : ''}
+    <div id="testScore"></div>
+    <form onsubmit="sendTest(event)">
+      ${x.questions.map((q, i) => `<div class="q" id="q_${q.id}"><p class="qt">${i + 1}. ${esc(q.q)}</p>
+        ${q.opts.map((o, j) => { const L = 'ABCD'[j]; return `<label class="opt" data-l="${L}"><input type="radio" name="${q.id}" value="${L}"> ${L}. ${esc(o)}</label>`; }).join('')}
+        <p class="exp hidden"></p></div>`).join('')}
+      <button class="btn full" type="submit" id="testBtn">टेस्ट जमा करें</button>
+    </form>`;
+}
+
+async function sendTest(e) {
+  e.preventDefault();
+  const ch = CUR.chapters[CUR_CH];
+  try {
+    const x = await loadExtras(ch.id);
+    const answers = {}; let blank = 0;
+    x.questions.forEach(q => { const el = document.querySelector(`input[name="${q.id}"]:checked`); if (el) answers[q.id] = el.value; else blank++; });
+    if (blank && !confirm(blank + ' सवाल छूट गए हैं। फिर भी जमा करें?')) return;
+    const r = await api('submitTest', { chapterId: ch.id, answers });
+    if (!r.ok) return alert(r.error);
+    r.results.forEach(res => {
+      const box = $('q_' + res.id); if (!box) return;
+      box.querySelectorAll('input').forEach(i => i.disabled = true);
+      box.querySelectorAll('.opt').forEach(o => {
+        if (o.dataset.l === res.correct) o.classList.add('right');
+        else if (o.dataset.l === res.given) o.classList.add('wrong');
+      });
+      if (res.exp) { const p = box.querySelector('.exp'); p.textContent = '💡 ' + res.exp; p.classList.remove('hidden'); }
+    });
+    const pct = Math.round(r.score / r.total * 100);
+    $('testScore').innerHTML = `<div class="score"><div class="big">${r.score} / ${r.total}</div>
+      <div>${pct}% • ${pct >= 80 ? '🎉 शानदार!' : pct >= 50 ? '👍 अच्छा है' : '📖 थोड़ा और पढ़ें'}</div></div>`;
+    $('testBtn').outerHTML = `<button class="btn gray full" type="button" onclick="reloadPart('test')">🔁 फिर से दें</button>`;
+    delete EXTRAS[ch.id];
+    $('testScore').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) { fail(err); }
+}
+
+// ================= डाउट =================
+function doubtHtml(x) {
+  const list = x.doubts.map(d => `<div class="doubt">
+      <p><b>${esc(d.by)}${d.mine ? ' (आप)' : ''}</b> <span class="muted">${esc(d.at)}</span></p>
+      <p style="white-space:pre-line">❓ ${esc(d.q)}</p>
+      ${d.a ? `<div class="ans"><b>${esc(d.ansBy || 'टीचर')}:</b> <span style="white-space:pre-line">${esc(d.a)}</span></div>`
+            : x.canEdit ? `<form onsubmit="sendAnswer(event,'${d.id}',true)"><textarea id="ans_${d.id}" placeholder="जवाब लिखें" required></textarea>
+                <button class="btn sm" type="submit" style="margin-top:6px">जवाब भेजें</button></form>`
+            : '<p class="muted">⏳ जवाब का इंतज़ार है</p>'}
+    </div>`).join('');
+  return `${x.canEdit ? '' : `<form onsubmit="sendDoubt(event)">
+      <label>इस चैप्टर में कुछ समझ नहीं आया? यहाँ पूछें</label>
+      <textarea id="dq" required placeholder="अपना सवाल लिखें..."></textarea>
+      <button class="btn full" type="submit">❓ सवाल भेजें</button></form><div id="dmsg"></div>`}
+    <h4 style="margin:18px 0 6px">सवाल-जवाब (${x.doubts.length})</h4>
+    ${list || '<p class="muted">अभी कोई सवाल नहीं पूछा गया।</p>'}`;
+}
+
+async function sendDoubt(e) {
+  e.preventDefault();
+  const ch = CUR.chapters[CUR_CH];
+  try {
+    const r = await api('askDoubt', { chapterId: ch.id, question: $('dq').value });
+    if (r.ok) reloadPart('doubt'); else msg('dmsg', r.error, false);
+  } catch (err) { msg('dmsg', err.message, false); }
+}
+
+async function sendAnswer(e, id, inChapter) {
+  e.preventDefault();
+  try {
+    const r = await api('answerDoubt', { doubtId: id, answer: $('ans_' + id).value });
+    if (!r.ok) return alert(r.error);
+    inChapter ? reloadPart('doubt') : inbox();
+  } catch (err) { fail(err); }
 }
 
 // ================= फ़ुल स्क्रीन =================
@@ -469,7 +761,7 @@ async function makePlayer(videoId) {
   seek.onchange = () => { const d = YTP.getDuration(); YTP.seekTo(d * seek.value / 1000, true); dragging = false; };
   vp.onmousemove = wake; vp.ontouchstart = wake;
   YT_TICK = setInterval(() => {
-    if (!YTP || !YTP.getDuration) return;
+    if (!YTP || !YTP.getDuration || !$('vpSeek')) return;
     const d = YTP.getDuration() || 0, t = YTP.getCurrentTime() || 0;
     if (!dragging && d) { seek.value = Math.round(t / d * 1000); $('vpTime').textContent = fmt(t) + ' / ' + fmt(d); }
   }, 500);
@@ -496,9 +788,15 @@ function stopPlayer() {
   YTP = null;
 }
 
-// ================= अपना PDF व्यूअर =================
+// ================= अपना PDF व्यूअर (स्मूथ) =================
 const PDF_CACHE = {};
-let PDFDOC = null, PDF_ZOOM = 1, PDF_TOKEN = 0, PDF_RESIZE_T = null;
+let PDFDOC = null, PDF_ZOOM = 1, PDF_TOKEN = 0, PDF_RESIZE_T = null, PDF_OBS = null, PDF_W = 0;
+
+function b64ToBytes(b64) {
+  const bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
 
 function pdfHtml() {
   return `<div class="pv" id="pv">
@@ -509,60 +807,74 @@ function pdfHtml() {
       <span class="sp2"></span>
       <button onclick="toggleFs($('pv'), renderPdf)">⛶</button>
     </div>
-    <div class="pages" id="pvPages"><div class="pmsg">नोट्स लोड हो रहे हैं...</div></div>
+    <div class="pages" id="pvPages"><div class="pmsg">लोड हो रहा है...</div></div>
   </div>`;
 }
 
-async function openPdf(chapterId) {
+async function openPdfData(key, loader) {
   const my = ++PDF_TOKEN;
   PDF_ZOOM = 1;
-  if (!window.pdfjsLib) { $('pvPages').innerHTML = '<div class="pmsg">PDF व्यूअर लोड नहीं हुआ। पेज रिफ़्रेश करें।</div>'; return; }
+  if (!window.pdfjsLib) { if ($('pvPages')) $('pvPages').innerHTML = '<div class="pmsg">PDF व्यूअर लोड नहीं हुआ। पेज रिफ़्रेश करें।</div>'; return; }
   try {
-    let bytes = PDF_CACHE[chapterId];
-    if (!bytes) {
-      const r = await api('getPdf', { chapterId });
-      if (my !== PDF_TOKEN) return;
-      if (!r.ok) { $('pvPages').innerHTML = `<div class="pmsg">${esc(r.error)}</div>`; return; }
-      const bin = atob(r.data); bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      PDF_CACHE[chapterId] = bytes;
-    }
+    let bytes = PDF_CACHE[key];
+    if (!bytes) { bytes = await loader(); if (my !== PDF_TOKEN) return; PDF_CACHE[key] = bytes; }
     const doc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
-    if (my !== PDF_TOKEN) return;
+    if (my !== PDF_TOKEN) { try { doc.destroy(); } catch (e) {} return; }
     PDFDOC = doc;
-    renderPdf();
-    $('pvPages').onscroll = updatePageNo;
+    await renderPdf();
+    if ($('pvPages')) $('pvPages').onscroll = updatePageNo;
   } catch (e) {
-    if (my === PDF_TOKEN && $('pvPages')) $('pvPages').innerHTML = '<div class="pmsg">नोट्स नहीं खुल पाए। फिर से कोशिश करें।</div>';
+    if (my === PDF_TOKEN && $('pvPages')) $('pvPages').innerHTML = `<div class="pmsg">${esc(e.message || 'फ़ाइल नहीं खुल पाई')}</div>`;
   }
 }
 
+// सारे पन्नों की खाली जगह बनाओ, असली पन्ना तभी बनाओ जब वो स्क्रीन के पास आए
 async function renderPdf() {
   if (!PDFDOC || !$('pvPages')) return;
-  const my = PDF_TOKEN, box = $('pvPages');
-  const width = box.clientWidth - 16;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const my = PDF_TOKEN, doc = PDFDOC, box = $('pvPages');
+  const ratio = box.scrollHeight > box.clientHeight ? box.scrollTop / box.scrollHeight : 0;
+  if (PDF_OBS) PDF_OBS.disconnect();
+  PDF_W = box.clientWidth - 16;
+  const first = await doc.getPage(1);
+  if (my !== PDF_TOKEN || !$('pvPages')) return;
+  const b = first.getViewport({ scale: 1 });
+  const w = PDF_W * PDF_ZOOM, h = w * b.height / b.width;
   box.innerHTML = '';
-  for (let n = 1; n <= PDFDOC.numPages; n++) {
-    const page = await PDFDOC.getPage(n);
-    if (my !== PDF_TOKEN || !$('pvPages')) return;
+  for (let n = 1; n <= doc.numPages; n++) {
+    const d = document.createElement('div');
+    d.className = 'pg'; d.dataset.page = n;
+    d.style.width = w + 'px'; d.style.height = h + 'px';
+    box.appendChild(d);
+  }
+  box.scrollTop = ratio * box.scrollHeight;
+  PDF_OBS = new IntersectionObserver(ents => ents.forEach(en => {
+    if (en.isIntersecting && !en.target.dataset.done) drawPage(en.target, my, doc);
+  }), { root: box, rootMargin: '800px 0px' });
+  box.querySelectorAll('.pg').forEach(d => PDF_OBS.observe(d));
+  updatePageNo();
+}
+
+async function drawPage(div, my, doc) {
+  div.dataset.done = '1';
+  try {
+    const page = await doc.getPage(+div.dataset.page);
+    if (my !== PDF_TOKEN || !div.isConnected) return;
     const base = page.getViewport({ scale: 1 });
-    const scale = (width / base.width) * PDF_ZOOM;
+    const scale = (PDF_W / base.width) * PDF_ZOOM;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const vp = page.getViewport({ scale: scale * dpr });
     const cv = document.createElement('canvas');
-    cv.width = vp.width; cv.height = vp.height;
-    cv.style.width = (vp.width / dpr) + 'px'; cv.style.height = (vp.height / dpr) + 'px';
-    cv.dataset.page = n;
-    box.appendChild(cv);
+    cv.width = Math.floor(vp.width); cv.height = Math.floor(vp.height);
+    div.style.width = (vp.width / dpr) + 'px'; div.style.height = (vp.height / dpr) + 'px';
+    div.appendChild(cv);
     await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
-    if (n === 1) updatePageNo();
-  }
+  } catch (e) { div.dataset.done = ''; }
 }
 
 function updatePageNo() {
-  const box = $('pvPages'); if (!box || !PDFDOC) return;
+  const box = $('pvPages'); if (!box || !PDFDOC || !$('pvInfo')) return;
   let cur = 1; const top = box.scrollTop + box.clientHeight / 3;
-  for (const cv of box.querySelectorAll('canvas')) { if (cv.offsetTop <= top) cur = +cv.dataset.page; }
+  for (const d of box.querySelectorAll('.pg')) { if (d.offsetTop <= top) cur = +d.dataset.page; else break; }
   $('pvInfo').textContent = `पेज ${cur} / ${PDFDOC.numPages}`;
 }
 
@@ -571,20 +883,27 @@ function pdfZoom(d) {
   renderPdf();
 }
 
-function stopPdf() { PDF_TOKEN++; PDFDOC = null; }
+function stopPdf() {
+  PDF_TOKEN++;
+  if (PDF_OBS) { PDF_OBS.disconnect(); PDF_OBS = null; }
+  if (PDFDOC) { try { PDFDOC.destroy(); } catch (e) {} }
+  PDFDOC = null;
+}
 
 function refitPdf() { clearTimeout(PDF_RESIZE_T); PDF_RESIZE_T = setTimeout(renderPdf, 300); }
 window.addEventListener('resize', refitPdf);
 document.addEventListener('fullscreenchange', refitPdf);
 document.addEventListener('webkitfullscreenchange', refitPdf);
 
-// ================= टीचर =================
+// ================= टीचर: कोर्स =================
 async function teacherCourses() {
-  const r = await api('teacherCourses'); if (!r.ok) return alert(r.error);
-  app(`${backBtn()}<h2>मेरे बनाए कोर्स</h2>
-    <button class="btn" onclick="courseForm()">➕ नया कोर्स</button>
-    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `courseEditor('${c.id}')`, true)).join('')}</div>`
-                       : '<p class="muted" style="margin-top:12px">अभी कोई कोर्स नहीं बनाया।</p>'}`);
+  try {
+    const r = await api('teacherCourses'); if (!r.ok) return alert(r.error);
+    app(`${backBtn()}<h2>मेरे बनाए कोर्स</h2>
+      <button class="btn" onclick="courseForm()">➕ नया कोर्स</button>
+      ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `courseEditor('${c.id}')`, true)).join('')}</div>`
+                         : '<p class="muted" style="margin-top:12px">अभी कोई कोर्स नहीं बनाया।</p>'}`);
+  } catch (e) { fail(e); }
 }
 
 function courseForm(c) {
@@ -605,13 +924,17 @@ function courseForm(c) {
 
 async function saveCourse(e, id) {
   e.preventDefault();
-  const r = await api('saveCourse', { courseId: id, title: $('cTitle').value, subject: $('cSubject').value,
-    description: $('cDesc').value, price: $('cPrice').value, thumb: $('cThumb').value });
-  if (r.ok) courseEditor(r.courseId); else msg('cmsg', r.error, false);
+  try {
+    const r = await api('saveCourse', { courseId: id, title: $('cTitle').value, subject: $('cSubject').value,
+      description: $('cDesc').value, price: $('cPrice').value, thumb: $('cThumb').value });
+    if (r.ok) courseEditor(r.courseId); else msg('cmsg', r.error, false);
+  } catch (err) { msg('cmsg', err.message, false); }
 }
 
 async function courseEditor(id) {
-  const r = await api('getCourse', { courseId: id }); if (!r.ok) return alert(r.error);
+  let r;
+  try { r = await api('getCourse', { courseId: id }); } catch (e) { return fail(e); }
+  if (!r.ok) return alert(r.error);
   CUR = r; const c = r.course;
   const canSubmit = c.status === 'draft' || c.status === 'rejected';
   app(`${backBtn(USER.role === 'admin' ? 'home()' : 'teacherCourses()')}
@@ -626,7 +949,8 @@ async function courseEditor(id) {
     </div>
     <div class="card"><h3>चैप्टर (${r.chapters.length})</h3>
       ${r.chapters.map((ch, i) => `<div class="row"><span>${i + 1}. ${esc(ch.title)} <span class="muted">${ch.hasVideo ? '🎬' : ''} ${ch.hasPdf ? '📄' : ''}</span></span>
-        <button class="btn red sm" onclick="delChapter('${ch.id}','${c.id}')">हटाएँ</button></div>`).join('') || '<p class="muted">अभी कोई चैप्टर नहीं है।</p>'}
+        <span style="white-space:nowrap"><button class="btn sm" onclick="chapterManage('${ch.id}','${c.id}')">⚙️ होमवर्क/टेस्ट</button>
+        <button class="btn red sm" onclick="delChapter('${ch.id}','${c.id}')">हटाएँ</button></span></div>`).join('') || '<p class="muted">अभी कोई चैप्टर नहीं है।</p>'}
     </div>
     <div class="card"><h3>नया चैप्टर जोड़ें</h3>
       <form onsubmit="addChapter(event,'${c.id}')">
@@ -635,24 +959,190 @@ async function courseEditor(id) {
         <label>Drive PDF का लिंक (Anyone with the link पर शेयर हो)</label><input id="chPdf" placeholder="https://drive.google.com/file/d/...">
         <button class="btn full" type="submit">चैप्टर जोड़ें</button>
       </form><div id="chmsg"></div>
+    </div>
+    <div class="card"><h3>📅 लाइव क्लास</h3>
+      ${liveHtml(r.live, { teacher: true, del: true })}
+      <details style="margin-top:12px"><summary>➕ नई लाइव क्लास जोड़ें</summary>
+        <form onsubmit="addLive(event,'${c.id}')">
+          <label>क्लास का नाम</label><input id="lvTitle" placeholder="जैसे: चैप्टर 1 की क्लास">
+          <label>तारीख और समय *</label><input id="lvStart" type="datetime-local" required>
+          <label>कितने मिनट</label><input id="lvDur" type="number" value="45" min="10" max="300">
+          <label>Google Meet लिंक *</label><input id="lvLink" placeholder="https://meet.google.com/..." required>
+          <button class="btn full" type="submit">क्लास जोड़ें</button>
+        </form><div id="lvmsg"></div>
+      </details>
     </div>`);
 }
 
 async function addChapter(e, cid) {
   e.preventDefault();
-  const r = await api('addChapter', { courseId: cid, title: $('chTitle').value, video: $('chVideo').value, pdf: $('chPdf').value });
-  if (r.ok) courseEditor(cid); else msg('chmsg', r.error, false);
+  try {
+    const r = await api('addChapter', { courseId: cid, title: $('chTitle').value, video: $('chVideo').value, pdf: $('chPdf').value });
+    if (r.ok) courseEditor(cid); else msg('chmsg', r.error, false);
+  } catch (err) { msg('chmsg', err.message, false); }
 }
 
 async function delChapter(chid, cid) {
   if (!confirm('ये चैप्टर हटाना है?')) return;
-  const r = await api('deleteChapter', { chapterId: chid });
-  if (r.ok) courseEditor(cid); else alert(r.error);
+  try {
+    const r = await api('deleteChapter', { chapterId: chid });
+    if (r.ok) courseEditor(cid); else alert(r.error);
+  } catch (e) { fail(e); }
 }
 
 async function submitCourse(cid) {
-  const r = await api('submitCourse', { courseId: cid });
-  if (r.ok) courseEditor(cid); else alert(r.error);
+  try {
+    const r = await api('submitCourse', { courseId: cid });
+    if (r.ok) courseEditor(cid); else alert(r.error);
+  } catch (e) { fail(e); }
+}
+
+async function addLive(e, cid) {
+  e.preventDefault();
+  const v = $('lvStart').value;
+  if (!v) return msg('lvmsg', 'तारीख और समय डालें', false);
+  try {
+    const r = await api('addLiveClass', { courseId: cid, title: $('lvTitle').value, start: new Date(v).toISOString(),
+                                          duration: $('lvDur').value, link: $('lvLink').value });
+    if (r.ok) courseEditor(cid); else msg('lvmsg', r.error, false);
+  } catch (err) { msg('lvmsg', err.message, false); }
+}
+
+async function delLive(id, cid) {
+  if (!confirm('ये लाइव क्लास हटानी है?')) return;
+  try {
+    const r = await api('deleteLiveClass', { classId: id });
+    if (r.ok) courseEditor(cid); else alert(r.error);
+  } catch (e) { fail(e); }
+}
+
+// ================= टीचर: चैप्टर में होमवर्क और टेस्ट =================
+async function chapterManage(chid, cid) {
+  let x;
+  try { x = await loadExtras(chid, true); } catch (e) { return fail(e); }
+  const ch = ((CUR && CUR.chapters) || []).find(c => c.id === chid) || { title: '' };
+  app(`${backBtn(`courseEditor('${cid}')`)}<h2>⚙️ ${esc(ch.title)}</h2>
+    <div class="card"><h3>📝 होमवर्क (${x.assignments.length})</h3>
+      ${x.assignments.map(a => `<div class="row"><span><b>${esc(a.title)}</b><br>
+          <span class="muted">${a.maxMarks ? 'नंबर ' + a.maxMarks + ' • ' : ''}${a.due ? esc(a.due) + ' • ' : ''}जमा: ${a.submitted} • चेक बाकी: ${a.pending}</span></span>
+        <button class="btn red sm" onclick="delAsg('${a.id}','${chid}','${cid}')">हटाएँ</button></div>`).join('') || '<p class="muted">अभी कोई होमवर्क नहीं।</p>'}
+      <details style="margin-top:12px"><summary>➕ नया होमवर्क जोड़ें</summary>
+        <form onsubmit="addAsg(event,'${chid}','${cid}')">
+          <label>होमवर्क का नाम *</label><input id="aTitle" required placeholder="जैसे: अभ्यास 1.1">
+          <label>क्या करना है (निर्देश)</label><textarea id="aInst" placeholder="जैसे: सवाल 1 से 10 हल करके फ़ोटो भेजें"></textarea>
+          <label>कुल नंबर</label><input id="aMax" type="number" min="0" value="10">
+          <label>आख़िरी तारीख (ज़रूरी नहीं)</label><input id="aDue" type="date">
+          <button class="btn full" type="submit">होमवर्क जोड़ें</button>
+        </form><div id="asgmsg"></div>
+      </details>
+    </div>
+    <div class="card"><h3>✅ MCQ टेस्ट (${x.questions.length} सवाल)</h3>
+      ${x.questions.map((q, i) => `<div class="row"><span>${i + 1}. ${esc(q.q)}<br>
+          <span class="muted">सही: ${esc(q.correct)}. ${esc(q.opts['ABCD'.indexOf(q.correct)] || '')}</span></span>
+        <button class="btn red sm" onclick="delQ('${q.id}','${chid}','${cid}')">हटाएँ</button></div>`).join('') || '<p class="muted">अभी कोई सवाल नहीं।</p>'}
+      <details style="margin-top:12px" open><summary>➕ नया सवाल जोड़ें</summary>
+        <form onsubmit="addQ(event,'${chid}','${cid}')">
+          <label>सवाल *</label><textarea id="qText" required></textarea>
+          ${['A', 'B', 'C', 'D'].map(L => `<label>विकल्प ${L} *</label><input id="qOpt${L}" required>`).join('')}
+          <label>सही विकल्प *</label>
+          <select id="qRight"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+          <label>समझाइए (ज़रूरी नहीं, टेस्ट के बाद दिखेगा)</label><textarea id="qExp"></textarea>
+          <button class="btn full" type="submit">सवाल जोड़ें</button>
+        </form><div id="qmsg"></div>
+      </details>
+    </div>`);
+}
+
+async function addAsg(e, chid, cid) {
+  e.preventDefault();
+  try {
+    const r = await api('addAssignment', { chapterId: chid, title: $('aTitle').value, instructions: $('aInst').value,
+                                           maxMarks: $('aMax').value, due: $('aDue').value });
+    if (r.ok) chapterManage(chid, cid); else msg('asgmsg', r.error, false);
+  } catch (err) { msg('asgmsg', err.message, false); }
+}
+
+async function delAsg(id, chid, cid) {
+  if (!confirm('ये होमवर्क हटाना है?')) return;
+  try {
+    const r = await api('deleteAssignment', { assignmentId: id });
+    if (r.ok) chapterManage(chid, cid); else alert(r.error);
+  } catch (e) { fail(e); }
+}
+
+async function addQ(e, chid, cid) {
+  e.preventDefault();
+  try {
+    const r = await api('addQuestion', { chapterId: chid, question: $('qText').value,
+      options: ['A', 'B', 'C', 'D'].map(L => $('qOpt' + L).value), correct: $('qRight').value, explanation: $('qExp').value });
+    if (r.ok) chapterManage(chid, cid); else msg('qmsg', r.error, false);
+  } catch (err) { msg('qmsg', err.message, false); }
+}
+
+async function delQ(id, chid, cid) {
+  if (!confirm('ये सवाल हटाना है?')) return;
+  try {
+    const r = await api('deleteQuestion', { questionId: id });
+    if (r.ok) chapterManage(chid, cid); else alert(r.error);
+  } catch (e) { fail(e); }
+}
+
+// ================= टीचर: चेक करना बाकी =================
+let INBOX = null;
+async function inbox() {
+  let r;
+  try { r = await api('teacherInbox'); } catch (e) { return fail(e); }
+  if (!r.ok) return alert(r.error);
+  INBOX = r;
+  app(`${backBtn()}<h2>📥 चेक करना बाकी</h2>
+    <div class="card"><h3>📝 होमवर्क (${r.homework.length})</h3>
+      ${r.homework.map(h => `<div class="row"><span><b>${esc(h.student)}</b> — ${esc(h.assignment)}<br>
+          <span class="muted">${esc(h.course)} • ${esc(h.chapter)} • ${esc(h.at)}</span></span>
+        <button class="btn sm" onclick="gradeView('${h.id}')">चेक करें</button></div>`).join('') || '<p class="muted">कोई होमवर्क बाकी नहीं। 🎉</p>'}
+    </div>
+    <div class="card"><h3>💬 डाउट (${r.doubts.length})</h3>
+      ${r.doubts.map(d => `<div class="doubt">
+          <p><b>${esc(d.by)}</b> <span class="muted">${esc(d.course)} • ${esc(d.chapter)} • ${esc(d.at)}</span></p>
+          <p style="white-space:pre-line">❓ ${esc(d.q)}</p>
+          <form onsubmit="sendAnswer(event,'${d.id}',false)"><textarea id="ans_${d.id}" placeholder="जवाब लिखें" required></textarea>
+            <button class="btn sm" type="submit" style="margin-top:6px">जवाब भेजें</button></form>
+        </div>`).join('') || '<p class="muted">कोई डाउट बाकी नहीं। 🎉</p>'}
+    </div>`);
+}
+
+function gradeView(id) {
+  const h = INBOX && INBOX.homework.find(x => x.id === id); if (!h) return;
+  app(`${backBtn('inbox()')}
+    <div class="card"><h2>${esc(h.assignment)}</h2>
+      <p class="muted">${esc(h.student)} • ${esc(h.course)} • ${esc(h.chapter)} • ${esc(h.at)}</p>
+      ${h.instructions ? `<p style="white-space:pre-line;margin-top:8px">${esc(h.instructions)}</p>` : ''}
+      <div style="margin-top:10px">${fileBtns(h.files, 'कॉपी')}</div>
+      <div id="fileView"></div>
+    </div>
+    <div class="card"><h3>नंबर और कमेंट</h3>
+      <form onsubmit="sendGrade(event,'${h.id}')">
+        <label>नंबर * ${h.maxMarks ? '(कुल ' + h.maxMarks + ')' : ''}</label>
+        <input id="gMarks" type="number" min="0" ${h.maxMarks ? `max="${h.maxMarks}"` : ''} step="0.5" required>
+        <label>कमेंट / सुधार</label><textarea id="gFb" placeholder="जैसे: सवाल 3 में गलती है..."></textarea>
+        <label>चेक की हुई कॉपी की फ़ोटो (ज़रूरी नहीं)</label><input id="gFile" type="file" accept="image/*,application/pdf">
+        <button class="btn green full" type="submit">✅ चेक पूरा करें</button>
+      </form><div id="gmsg"></div>
+    </div>`);
+  if (h.files[0]) viewFile(h.files[0]);
+}
+
+async function sendGrade(e, id) {
+  e.preventDefault();
+  const btn = e.submitter; if (btn) btn.disabled = true;
+  try {
+    let file = null;
+    const f = $('gFile').files;
+    if (f.length) file = (await prepFiles(f))[0];
+    const r = await api('gradeSubmission', { submissionId: id, marks: $('gMarks').value, feedback: $('gFb').value, file });
+    if (!r.ok) throw new Error(r.error);
+    alert('चेक हो गया! स्टूडेंट को नंबर दिख जाएँगे।');
+    inbox();
+  } catch (err) { msg('gmsg', err.message, false); if (btn) btn.disabled = false; }
 }
 
 // ================= एडमिन =================
@@ -670,13 +1160,17 @@ function teacherForm() {
 
 async function createTeacher(e) {
   e.preventDefault();
-  const r = await api('createTeacher', { name: $('tName').value, email: $('tEmail').value, phone: $('tPhone').value, password: $('tPass').value });
-  if (r.ok) { msg('tmsg', 'टीचर अकाउंट बन गया! ईमेल और पासवर्ड टीचर को भेज दें।', true); e.target.reset(); }
-  else msg('tmsg', r.error, false);
+  try {
+    const r = await api('createTeacher', { name: $('tName').value, email: $('tEmail').value, phone: $('tPhone').value, password: $('tPass').value });
+    if (r.ok) { msg('tmsg', 'टीचर अकाउंट बन गया! ईमेल और पासवर्ड टीचर को भेज दें।', true); e.target.reset(); }
+    else msg('tmsg', r.error, false);
+  } catch (err) { msg('tmsg', err.message, false); }
 }
 
 async function pendingCourses() {
-  const r = await api('adminPending'); if (!r.ok) return alert(r.error);
+  let r;
+  try { r = await api('adminPending'); } catch (e) { return fail(e); }
+  if (!r.ok) return alert(r.error);
   app(`${backBtn()}<h2>मंज़ूरी के लिए कोर्स</h2>
     <div class="card">${r.courses.map(c => `<div class="row">
       <span><b>${esc(c.title)}</b><br><span class="muted">${esc(c.teacher)} • ${c.chapters} चैप्टर • ${c.price > 0 ? '₹' + c.price : 'फ्री'}</span></span>
@@ -689,8 +1183,10 @@ async function pendingCourses() {
 
 async function setStatus(cid, status) {
   if (!confirm(status === 'published' ? 'ये कोर्स पब्लिश करना है?' : 'ये कोर्स रिजेक्ट करना है?')) return;
-  const r = await api('setCourseStatus', { courseId: cid, status });
-  if (r.ok) pendingCourses(); else alert(r.error);
+  try {
+    const r = await api('setCourseStatus', { courseId: cid, status });
+    if (r.ok) pendingCourses(); else alert(r.error);
+  } catch (e) { fail(e); }
 }
 
 // ================= शुरुआत =================
