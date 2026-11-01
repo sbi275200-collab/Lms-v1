@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demo LMS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
   body{background:#f1f5f9;color:#1e293b;min-height:100vh}
@@ -20,14 +21,15 @@
   label{display:block;font-size:14px;margin:12px 0 4px;color:#475569}
   input,textarea,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
   textarea{min-height:80px;resize:vertical}
-  .btn{display:inline-block;margin-top:16px;padding:11px 18px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
-  .btn.full{width:100%}
+  .btn{display:inline-block;margin-top:16px;padding:11px 18px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none}
+  .btn.full{width:100%;text-align:center}
   .btn.green{background:#16a34a}.btn.red{background:#dc2626}.btn.gray{background:#64748b}
   .btn.sm{padding:7px 12px;font-size:13px;margin-top:0}
   .back{background:none;border:0;color:#2563eb;font-size:15px;cursor:pointer;margin-bottom:12px}
   .msg{margin-top:14px;padding:10px;border-radius:8px;font-size:14px}
   .msg.err{background:#fee2e2;color:#b91c1c}
   .msg.ok{background:#dcfce7;color:#166534}
+  .msg.wait{background:#fef9c3;color:#854d0e}
   .hidden{display:none!important}
   .badge{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:12px;margin-left:6px;vertical-align:middle}
   .badge.draft{background:#f1f5f9;color:#475569}.badge.pending{background:#fef9c3;color:#854d0e}
@@ -49,6 +51,20 @@
   .muted{color:#64748b;font-size:14px}
   .loader{position:fixed;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563eb,#60a5fa,#2563eb);background-size:200% 100%;animation:ld 1s linear infinite;z-index:200}
   @keyframes ld{to{background-position:-200% 0}}
+
+  /* पेमेंट */
+  .paybox{border:2px dashed #cbd5e1;border-radius:14px;padding:18px;margin-top:16px;text-align:center}
+  .paybox h3{font-size:16px;margin-bottom:4px}
+  .step{display:inline-block;background:#2563eb;color:#fff;width:24px;height:24px;border-radius:50%;font-size:13px;line-height:24px;margin-right:6px}
+  #qr{display:flex;justify-content:center;margin:14px 0}
+  #qr img,#qr canvas{background:#fff;padding:8px;border-radius:8px;border:1px solid #e2e8f0}
+  .upiline{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:15px}
+  .upiline code{background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:15px}
+  .bigamt{font-size:28px;font-weight:800;color:#16a34a;margin:4px 0}
+  .utr{font-size:20px;letter-spacing:2px;text-align:center}
+  .paycard{border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:12px}
+  .paycard .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .paycard .utrbig{font-family:monospace;font-size:18px;font-weight:700;letter-spacing:1px;background:#f1f5f9;padding:6px 10px;border-radius:6px;display:inline-block;margin:8px 0}
 
   /* चैप्टर टैब */
   .ctabs{display:flex;gap:8px;margin-bottom:14px}
@@ -128,6 +144,12 @@ async function api(action, data = {}) {
 function msg(id, text, ok) { const m = $(id); if (m) { m.className = 'msg ' + (ok ? 'ok' : 'err'); m.textContent = text; } }
 const backBtn = (fn = 'home()') => `<button class="back" onclick="${fn}">← वापस</button>`;
 
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) { const x = document.createElement('textarea'); x.value = t; document.body.appendChild(x); x.select(); document.execCommand('copy'); x.remove(); }
+  if (btn) { const o = btn.textContent; btn.textContent = '✓ कॉपी हुआ'; setTimeout(() => btn.textContent = o, 1500); }
+}
+
 // ================= लॉगिन / साइन-अप =================
 function authView(note) {
   $('logoutBtn').classList.add('hidden');
@@ -191,8 +213,8 @@ function home() {
   const tiles = {
     student: [['📚 मेरे कोर्स','जो कोर्स आपने शुरू किए','myCourses()'], ['🔍 सभी कोर्स देखें','नए कोर्स खोजें','allCourses()']],
     teacher: [['📚 मेरे कोर्स','अपने कोर्स देखें और एडिट करें','teacherCourses()'], ['➕ नया कोर्स बनाएँ','नया कोर्स शुरू करें','courseForm()']],
-    admin:   [['👩‍🏫 टीचर जोड़ें','नया टीचर अकाउंट बनाएँ','teacherForm()'], ['✅ कोर्स मंज़ूरी','टीचर के भेजे कोर्स चेक करें','pendingCourses()'],
-              ['🔍 सभी कोर्स','पब्लिश हुए कोर्स देखें','allCourses()'], ['💰 पेमेंट वेरीफाई','भाग 3 में आएगा',''],
+    admin:   [['💰 पेमेंट वेरीफाई','स्टूडेंट के UPI पेमेंट चेक करें','adminPayments()'], ['✅ कोर्स मंज़ूरी','टीचर के भेजे कोर्स चेक करें','pendingCourses()'],
+              ['👩‍🏫 टीचर जोड़ें','नया टीचर अकाउंट बनाएँ','teacherForm()'], ['🔍 सभी कोर्स','पब्लिश हुए कोर्स देखें','allCourses()'],
               ['➕ अपना कोर्स बनाएँ','एडमिन भी कोर्स बना सकता है','courseForm()'], ['📚 मेरे बनाए कोर्स','','teacherCourses()']]
   }[USER.role] || [];
   app(`<h2>नमस्ते, ${esc(USER.name)} <span class="badge">${roles[USER.role] || USER.role}</span></h2>
@@ -229,9 +251,8 @@ async function openCourse(id) {
   CUR = r;
   const c = r.course;
   let action = '';
-  if (!r.access) {
-    if (c.price === 0 && r.role === 'student') action = `<button class="btn green" onclick="enroll('${c.id}')">फ्री में शुरू करें</button>`;
-    else if (r.role === 'student') action = `<p class="price" style="margin-top:12px">₹${c.price} — पेमेंट की सुविधा जल्द आ रही है</p>`;
+  if (!r.access && r.role === 'student') {
+    action = c.price === 0 ? `<button class="btn green" onclick="enroll('${c.id}')">फ्री में शुरू करें</button>` : payBox(r);
   }
   app(`${backBtn()}
     <div class="card">
@@ -251,6 +272,97 @@ async function openCourse(id) {
   if (r.access && r.chapters.length) openChapter(0, true);
 }
 
+async function enroll(id) {
+  const r = await api('enrollFree', { courseId: id });
+  if (r.ok) openCourse(id); else alert(r.error);
+}
+
+// ================= UPI पेमेंट (स्टूडेंट) =================
+function upiLink(r) {
+  const c = r.course, p = r.pay;
+  return 'upi://pay?pa=' + encodeURIComponent(p.upi) + '&pn=' + encodeURIComponent(p.name) +
+         '&am=' + c.price + '&cu=INR&tn=' + encodeURIComponent(String(c.title).slice(0, 40));
+}
+
+function payBox(r) {
+  const c = r.course, p = r.payment;
+  if (p && p.status === 'pending')
+    return `<div class="msg wait">⏳ आपका पेमेंट (UTR: ${esc(p.utr)}) जाँच में है। मंज़ूरी मिलते ही ये कोर्स "मेरे कोर्स" में खुल जाएगा।</div>`;
+  if (!r.pay || !r.pay.upi) return '<p class="msg err">पेमेंट की जानकारी अभी सेट नहीं है, एडमिन से संपर्क करें।</p>';
+  const warn = p && p.status === 'rejected'
+    ? `<div class="msg err">आपका पिछला पेमेंट (UTR: ${esc(p.utr)}) मंज़ूर नहीं हुआ। सही UTR डालकर फिर से भेजें, या एडमिन से संपर्क करें।</div>` : '';
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return `${warn}
+    <button class="btn green" id="buyBtn" onclick="showPay()">₹${c.price} में खरीदें</button>
+    <div id="payArea" class="hidden">
+      <div class="paybox">
+        <h3><span class="step">1</span>पेमेंट करें</h3>
+        <div class="bigamt">₹${c.price}</div>
+        ${isMobile ? `<a class="btn green full" href="${esc(upiLink(r))}">📱 UPI ऐप से पे करें</a>
+          <p class="muted" style="margin-top:12px">या दूसरे फ़ोन से ये QR स्कैन करें</p>` : `<p class="muted">किसी भी UPI ऐप से ये QR स्कैन करें</p>`}
+        <div id="qr"></div>
+        <div class="upiline">UPI ID: <code>${esc(r.pay.upi)}</code>
+          <button class="btn sm gray" onclick="copyText('${esc(r.pay.upi)}', this)">कॉपी</button></div>
+        <p class="muted" style="margin-top:6px">नाम: ${esc(r.pay.name)}</p>
+      </div>
+      <div class="paybox">
+        <h3><span class="step">2</span>UTR नंबर डालें</h3>
+        <p class="muted">पेमेंट के बाद UPI ऐप में "UTR" या "UPI Ref No." वाला 12 अंकों का नंबर मिलेगा।</p>
+        <form onsubmit="sendPayment(event,'${c.id}')">
+          <input id="utrIn" class="utr" inputmode="numeric" maxlength="12" placeholder="12 अंकों का UTR" required style="margin-top:12px">
+          <button class="btn full" type="submit">पेमेंट जमा करें</button>
+        </form>
+        <div id="paymsg"></div>
+      </div>
+    </div>`;
+}
+
+function showPay() {
+  $('payArea').classList.remove('hidden');
+  $('buyBtn').classList.add('hidden');
+  if (window.QRCode && $('qr') && !$('qr').hasChildNodes()) {
+    new QRCode($('qr'), { text: upiLink(CUR), width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+  }
+  $('payArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function sendPayment(e, cid) {
+  e.preventDefault();
+  const utr = $('utrIn').value.replace(/\s/g, '');
+  if (!/^\d{12}$/.test(utr)) return msg('paymsg', 'UTR नंबर पूरे 12 अंकों का होना चाहिए', false);
+  if (!confirm('UTR ' + utr + ' जमा करना है?')) return;
+  const r = await api('submitPayment', { courseId: cid, utr });
+  if (r.ok) openCourse(cid); else msg('paymsg', r.error, false);
+}
+
+// ================= पेमेंट वेरीफाई (एडमिन) =================
+async function adminPayments() {
+  const r = await api('adminPayments'); if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>पेमेंट वेरीफाई</h2>
+    <p class="muted">अपने बैंक/UPI ऐप में UTR मिलाएँ। पैसे आए हों तो "मंज़ूर" दबाएँ, स्टूडेंट को कोर्स अपने आप मिल जाएगा।</p>
+    <div style="margin-top:14px">${r.payments.map(p => `<div class="card paycard">
+      <div class="top">
+        <div><b>${esc(p.student)}</b><br><span class="muted">${esc(p.phone)} ${p.email ? '• ' + esc(p.email) : ''}</span></div>
+        <div class="price" style="font-size:20px">₹${p.amount}</div>
+      </div>
+      <p style="margin-top:8px">📘 ${esc(p.course)}</p>
+      <div class="utrbig">UTR: ${esc(p.utr)}</div>
+      <button class="btn sm gray" onclick="copyText('${esc(p.utr)}', this)">कॉपी</button>
+      <p class="muted">${esc(p.at)}</p>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn green" style="flex:1;margin-top:0" onclick="verifyPay('${p.id}','verified')">✅ मंज़ूर</button>
+        <button class="btn red" style="flex:1;margin-top:0" onclick="verifyPay('${p.id}','rejected')">❌ रिजेक्ट</button>
+      </div></div>`).join('') || '<div class="card"><p class="muted">कोई पेमेंट जाँच के लिए बाकी नहीं है। 🎉</p></div>'}
+    </div>`);
+}
+
+async function verifyPay(pid, status) {
+  if (!confirm(status === 'verified' ? 'पैसे आ गए हैं? ये पेमेंट मंज़ूर करना है?' : 'ये पेमेंट रिजेक्ट करना है?')) return;
+  const r = await api('verifyPayment', { paymentId: pid, status });
+  if (r.ok) adminPayments(); else alert(r.error);
+}
+
+// ================= चैप्टर देखना =================
 function openChapter(i, noScroll) {
   CUR_CH = i;
   const ch = CUR.chapters[i];
@@ -276,12 +388,7 @@ function showPart(which) {
   else { $('partArea').innerHTML = pdfHtml(); openPdf(ch.id); }
 }
 
-async function enroll(id) {
-  const r = await api('enrollFree', { courseId: id });
-  if (r.ok) openCourse(id); else alert(r.error);
-}
-
-// ================= फ़ुल स्क्रीन (वीडियो और PDF दोनों के लिए) =================
+// ================= फ़ुल स्क्रीन =================
 function toggleFs(el, onChange) {
   if (!el) return;
   const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
@@ -291,7 +398,7 @@ function toggleFs(el, onChange) {
   const fallback = () => { el.classList.add('fs'); document.body.style.overflow = 'hidden'; onChange && onChange(); };
   if (req) {
     try { const p = req.call(el); if (p && p.catch) p.catch(fallback); } catch (e) { fallback(); }
-  } else fallback(); // iPhone जैसे फ़ोन के लिए
+  } else fallback();
 }
 
 // ================= अपना वीडियो प्लेयर =================
@@ -389,7 +496,7 @@ function stopPlayer() {
 }
 
 // ================= अपना PDF व्यूअर =================
-const PDF_CACHE = {};        // एक बार खुली PDF दोबारा नहीं मँगाते
+const PDF_CACHE = {};
 let PDFDOC = null, PDF_ZOOM = 1, PDF_TOKEN = 0, PDF_RESIZE_T = null;
 
 function pdfHtml() {
@@ -465,7 +572,6 @@ function pdfZoom(d) {
 
 function stopPdf() { PDF_TOKEN++; PDFDOC = null; }
 
-// फ़ोन घुमाने या फ़ुल स्क्रीन बदलने पर पन्ने फिर से फ़िट करो
 function refitPdf() { clearTimeout(PDF_RESIZE_T); PDF_RESIZE_T = setTimeout(renderPdf, 300); }
 window.addEventListener('resize', refitPdf);
 document.addEventListener('fullscreenchange', refitPdf);
