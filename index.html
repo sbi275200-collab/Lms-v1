@@ -249,6 +249,7 @@ let CUR = null, CUR_CH = 0;
 async function openCourse(id) {
   const r = await api('getCourse', { courseId: id }); if (!r.ok) return alert(r.error);
   CUR = r;
+ if (!r.pay || !r.pay.upi) r.pay = { upi: '8949536974-2@ibl', name: 'SOURAV BHATI' };
   const c = r.course;
   let action = '';
   if (!r.access && r.role === 'student') {
