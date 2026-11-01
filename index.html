@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -7,170 +8,358 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
   body{background:#f1f5f9;color:#1e293b;min-height:100vh}
-  header{background:#2563eb;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
-  header h1{font-size:20px}
+  header{background:#2563eb;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+  header h1{font-size:20px;cursor:pointer}
   header button{background:#fff;color:#2563eb;border:0;padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer}
-  .wrap{max-width:420px;margin:40px auto;padding:0 16px}
-  .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,.08)}
+  main{max-width:960px;margin:24px auto;padding:0 16px}
+  .narrow{max-width:420px;margin:16px auto}
+  .card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:16px}
   .tabs{display:flex;margin-bottom:18px;border-bottom:2px solid #e2e8f0}
   .tabs button{flex:1;background:none;border:0;padding:10px;font-size:16px;cursor:pointer;color:#64748b}
   .tabs button.active{color:#2563eb;border-bottom:3px solid #2563eb;font-weight:600}
   label{display:block;font-size:14px;margin:12px 0 4px;color:#475569}
-  input{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
-  .btn{width:100%;margin-top:18px;padding:12px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
+  input,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
+  textarea{min-height:80px;resize:vertical}
+  .btn{display:inline-block;margin-top:16px;padding:11px 18px;background:#2563eb;color:#fff;border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+  .btn.full{width:100%}
+  .btn.green{background:#16a34a}.btn.red{background:#dc2626}.btn.gray{background:#64748b}
+  .btn.sm{padding:7px 12px;font-size:13px;margin-top:0}
   .btn:disabled{opacity:.6}
-  .msg{margin-top:14px;padding:10px;border-radius:8px;font-size:14px;display:none}
-  .msg.err{display:block;background:#fee2e2;color:#b91c1c}
-  .msg.ok{display:block;background:#dcfce7;color:#166534}
+  .back{background:none;border:0;color:#2563eb;font-size:15px;cursor:pointer;margin-bottom:12px}
+  .msg{margin-top:14px;padding:10px;border-radius:8px;font-size:14px}
+  .msg.err{background:#fee2e2;color:#b91c1c}
+  .msg.ok{background:#dcfce7;color:#166534}
   .hidden{display:none}
-  .dash{max-width:900px;margin:30px auto;padding:0 16px}
-  .badge{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:13px;margin-left:6px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
-  .tile{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .badge{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:12px;margin-left:6px;vertical-align:middle}
+  .badge.draft{background:#f1f5f9;color:#475569}.badge.pending{background:#fef9c3;color:#854d0e}
+  .badge.published{background:#dcfce7;color:#166534}.badge.rejected{background:#fee2e2;color:#b91c1c}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:16px}
+  .tile{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);cursor:pointer;transition:transform .1s}
+  .tile:hover{transform:translateY(-2px)}
+  .tile.off{opacity:.55;cursor:default}
   .tile h3{font-size:16px;margin-bottom:6px}
   .tile p{font-size:14px;color:#64748b}
+  .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#e2e8f0;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:36px}
+  .price{font-weight:700;color:#16a34a}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #e2e8f0}
+  .row:last-child{border-bottom:0}
+  .ch{cursor:pointer}.ch.active{color:#2563eb;font-weight:600}
+  .player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;margin-bottom:12px}
+  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .shield-top{position:absolute;top:0;left:0;right:0;height:60px;z-index:2}
+  .shield-br{position:absolute;bottom:0;right:0;width:130px;height:46px;z-index:2}
+  .pdfbox{position:relative;width:100%;height:75vh;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #e2e8f0}
+  .pdfbox iframe{width:100%;height:100%;border:0}
+  .shield-pdf{position:absolute;top:0;right:0;width:80px;height:60px;z-index:2;background:transparent}
+  .loader{position:fixed;inset:0;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;z-index:50;font-size:16px;color:#2563eb;font-weight:600}
+  h2{margin-bottom:6px}
+  .muted{color:#64748b;font-size:14px}
 </style>
 </head>
-<body>
+<body oncontextmenu="return false">
 
 <header>
-  <h1 id="siteName">Demo LMS</h1>
+  <h1 id="siteName" onclick="if(USER)home()">Demo LMS</h1>
   <button id="logoutBtn" class="hidden" onclick="logout()">लॉगआउट</button>
 </header>
+<main id="app"></main>
+<div id="loader" class="loader hidden">रुकिए...</div>
 
-<!-- लॉगिन / साइन-अप -->
-<div id="authView" class="wrap">
-  <div class="card">
+<script>
+// ===== सेटिंग =====
+const API = "https://script.google.com/macros/s/AKfycbxmOfi8cXdPta-ITlweWlUuIycmLrQ8ZESLwFBuGaWj1EXTCT-rTdm6DKDndJ4mnsqR/exec";
+const SITE_NAME = "Demo LMS";
+
+let USER = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const app = html => { $('app').innerHTML = html; window.scrollTo(0, 0); };
+const statusName = { draft:'ड्राफ़्ट', pending:'मंज़ूरी बाकी', published:'पब्लिश', rejected:'रिजेक्ट' };
+$('siteName').textContent = SITE_NAME; document.title = SITE_NAME;
+
+async function api(action, data = {}, quiet) {
+  if (!quiet) $('loader').classList.remove('hidden');
+  try {
+    const res = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action, token: localStorage.getItem('token'), ...data }) });
+    const r = await res.json();
+    if (r.relogin) { localStorage.removeItem('token'); USER = null; authView('दोबारा लॉगिन करें'); throw new Error('relogin'); }
+    return r;
+  } catch (e) {
+    if (e.message !== 'relogin') alert('नेटवर्क में दिक्कत है, फिर से कोशिश करें');
+    throw e;
+  } finally { $('loader').classList.add('hidden'); }
+}
+
+function msg(id, text, ok) { const m = $(id); if (m) { m.className = 'msg ' + (ok ? 'ok' : 'err'); m.textContent = text; } }
+const backBtn = (fn = 'home()') => `<button class="back" onclick="${fn}">← वापस</button>`;
+
+// ================= लॉगिन / साइन-अप =================
+function authView(note) {
+  $('logoutBtn').classList.add('hidden');
+  app(`<div class="narrow card">
     <div class="tabs">
       <button id="tLogin" class="active" onclick="showTab('login')">लॉगिन</button>
       <button id="tSignup" onclick="showTab('signup')">नया अकाउंट</button>
     </div>
-
     <form id="loginForm" onsubmit="doLogin(event)">
-      <label>ईमेल</label>
-      <input id="lEmail" type="email" required>
-      <label>पासवर्ड</label>
-      <input id="lPass" type="password" required>
-      <button class="btn" type="submit">लॉगिन करें</button>
+      <label>ईमेल</label><input id="lEmail" type="email" required>
+      <label>पासवर्ड</label><input id="lPass" type="password" required>
+      <button class="btn full" type="submit">लॉगिन करें</button>
+      <p class="muted" style="margin-top:12px">पासवर्ड भूल गए? एडमिन से संपर्क करें।</p>
     </form>
-
     <form id="signupForm" class="hidden" onsubmit="doSignup(event)">
-      <label>पूरा नाम</label>
-      <input id="sName" required>
-      <label>ईमेल</label>
-      <input id="sEmail" type="email" required>
-      <label>मोबाइल नंबर</label>
-      <input id="sPhone" type="tel">
-      <label>पासवर्ड (कम से कम 6 अक्षर)</label>
-      <input id="sPass" type="password" minlength="6" required>
-      <button class="btn" type="submit">अकाउंट बनाएँ</button>
+      <label>पूरा नाम</label><input id="sName" required>
+      <label>ईमेल</label><input id="sEmail" type="email" required>
+      <label>मोबाइल नंबर</label><input id="sPhone" type="tel">
+      <label>पासवर्ड (कम से कम 6 अक्षर)</label><input id="sPass" type="password" minlength="6" required>
+      <button class="btn full" type="submit">अकाउंट बनाएँ</button>
     </form>
-
-    <div id="msg" class="msg"></div>
-  </div>
-</div>
-
-<!-- डैशबोर्ड -->
-<div id="dashView" class="dash hidden">
-  <h2>नमस्ते, <span id="uName"></span><span id="uRole" class="badge"></span></h2>
-  <div id="tiles" class="grid"></div>
-</div>
-
-<script>
-// ===== यहाँ अपना Apps Script Web App URL =====
-const API = "https://script.google.com/macros/s/AKfycbxmOfi8cXdPta-ITlweWlUuIycmLrQ8ZESLwFBuGaWj1EXTCT-rTdm6DKDndJ4mnsqR/exec";
-const SITE_NAME = "Demo LMS"; // बाद में अपने डोमेन का नाम डालें
-
-document.getElementById('siteName').textContent = SITE_NAME;
-document.title = SITE_NAME;
-
-async function api(action, data = {}) {
-  // text/plain भेजते हैं ताकि Apps Script के साथ CORS की दिक्कत न आए
-  const res = await fetch(API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...data })
-  });
-  return res.json();
-}
-
-function showMsg(text, ok) {
-  const m = document.getElementById('msg');
-  m.textContent = text;
-  m.className = 'msg ' + (ok ? 'ok' : 'err');
+    <div id="amsg"></div>
+  </div>`);
+  if (note) msg('amsg', note, false);
 }
 
 function showTab(t) {
-  document.getElementById('loginForm').classList.toggle('hidden', t !== 'login');
-  document.getElementById('signupForm').classList.toggle('hidden', t !== 'signup');
-  document.getElementById('tLogin').classList.toggle('active', t === 'login');
-  document.getElementById('tSignup').classList.toggle('active', t === 'signup');
-  document.getElementById('msg').className = 'msg';
+  $('loginForm').classList.toggle('hidden', t !== 'login');
+  $('signupForm').classList.toggle('hidden', t !== 'signup');
+  $('tLogin').classList.toggle('active', t === 'login');
+  $('tSignup').classList.toggle('active', t === 'signup');
+  $('amsg').className = ''; $('amsg').textContent = '';
 }
 
 async function doLogin(e) {
   e.preventDefault();
-  const btn = e.submitter; btn.disabled = true; btn.textContent = 'रुकिए...';
-  try {
-    const r = await api('login', {
-      email: document.getElementById('lEmail').value,
-      password: document.getElementById('lPass').value
-    });
-    if (r.ok) { localStorage.setItem('token', r.token); showDash(r.user); }
-    else showMsg(r.error, false);
-  } catch (err) { showMsg('नेटवर्क में दिक्कत है, फिर से कोशिश करें', false); }
-  btn.disabled = false; btn.textContent = 'लॉगिन करें';
+  const r = await api('login', { email: $('lEmail').value, password: $('lPass').value });
+  if (r.ok) { localStorage.setItem('token', r.token); USER = r.user; home(); }
+  else msg('amsg', r.error, false);
 }
 
 async function doSignup(e) {
   e.preventDefault();
-  const btn = e.submitter; btn.disabled = true; btn.textContent = 'रुकिए...';
-  try {
-    const r = await api('signup', {
-      name: document.getElementById('sName').value,
-      email: document.getElementById('sEmail').value,
-      phone: document.getElementById('sPhone').value,
-      password: document.getElementById('sPass').value
-    });
-    if (r.ok) { showTab('login'); showMsg('अकाउंट बन गया! अब लॉगिन करें।', true);
-                document.getElementById('lEmail').value = document.getElementById('sEmail').value; }
-    else showMsg(r.error, false);
-  } catch (err) { showMsg('नेटवर्क में दिक्कत है, फिर से कोशिश करें', false); }
-  btn.disabled = false; btn.textContent = 'अकाउंट बनाएँ';
-}
-
-function showDash(user) {
-  document.getElementById('authView').classList.add('hidden');
-  document.getElementById('dashView').classList.remove('hidden');
-  document.getElementById('logoutBtn').classList.remove('hidden');
-  document.getElementById('uName').textContent = user.name;
-  const roles = { student: 'स्टूडेंट', teacher: 'टीचर', admin: 'एडमिन' };
-  document.getElementById('uRole').textContent = roles[user.role] || user.role;
-
-  const tiles = {
-    student: [['मेरे कोर्स', 'जल्द आ रहा है'], ['सभी कोर्स देखें', 'जल्द आ रहा है']],
-    teacher: [['मेरे कोर्स', 'जल्द आ रहा है'], ['नया कोर्स बनाएँ', 'जल्द आ रहा है']],
-    admin:   [['टीचर जोड़ें', 'जल्द आ रहा है'], ['पेमेंट वेरीफाई', 'जल्द आ रहा है'], ['कोर्स मंज़ूरी', 'जल्द आ रहा है']]
-  }[user.role] || [];
-  document.getElementById('tiles').innerHTML =
-    tiles.map(t => `<div class="tile"><h3>${t[0]}</h3><p>${t[1]}</p></div>`).join('');
+  const email = $('sEmail').value;
+  const r = await api('signup', { name: $('sName').value, email, phone: $('sPhone').value, password: $('sPass').value });
+  if (r.ok) { showTab('login'); $('lEmail').value = email; msg('amsg', 'अकाउंट बन गया! अब लॉगिन करें।', true); }
+  else msg('amsg', r.error, false);
 }
 
 async function logout() {
   const token = localStorage.getItem('token');
-  localStorage.removeItem('token');
-  if (token) api('logout', { token }).catch(() => {});
-  location.reload();
+  localStorage.removeItem('token'); USER = null;
+  if (token) fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'logout', token }) }).catch(()=>{});
+  authView();
 }
 
-// पेज खुलते ही: अगर पहले से लॉगिन है तो सीधे डैशबोर्ड
+// ================= होम / डैशबोर्ड =================
+function home() {
+  $('logoutBtn').classList.remove('hidden');
+  const roles = { student:'स्टूडेंट', teacher:'टीचर', admin:'एडमिन' };
+  const tiles = {
+    student: [['📚 मेरे कोर्स','जो कोर्स आपने शुरू किए','myCourses()'], ['🔍 सभी कोर्स देखें','नए कोर्स खोजें','allCourses()']],
+    teacher: [['📚 मेरे कोर्स','अपने कोर्स देखें और एडिट करें','teacherCourses()'], ['➕ नया कोर्स बनाएँ','नया कोर्स शुरू करें','courseForm()']],
+    admin:   [['👩‍🏫 टीचर जोड़ें','नया टीचर अकाउंट बनाएँ','teacherForm()'], ['✅ कोर्स मंज़ूरी','टीचर के भेजे कोर्स चेक करें','pendingCourses()'],
+              ['🔍 सभी कोर्स','पब्लिश हुए कोर्स देखें','allCourses()'], ['💰 पेमेंट वेरीफाई','भाग 3 में आएगा',''],
+              ['➕ अपना कोर्स बनाएँ','एडमिन भी कोर्स बना सकता है','courseForm()'], ['📚 मेरे बनाए कोर्स','','teacherCourses()']]
+  }[USER.role] || [];
+  app(`<h2>नमस्ते, ${esc(USER.name)} <span class="badge">${roles[USER.role] || USER.role}</span></h2>
+    <div class="grid">${tiles.map(t => `<div class="tile ${t[2] ? '' : 'off'}" ${t[2] ? `onclick="${t[2]}"` : ''}><h3>${t[0]}</h3><p>${t[1]}</p></div>`).join('')}</div>`);
+}
+
+// ================= कोर्स कार्ड =================
+function cardHtml(c, onclick, showStatus) {
+  const thumb = c.thumb ? `<img class="thumb" src="${esc(c.thumb)}" alt="">` : `<div class="thumb">📘</div>`;
+  return `<div class="tile" onclick="${onclick}">${thumb}
+    <h3>${esc(c.title)} ${showStatus ? `<span class="badge ${esc(c.status)}">${statusName[c.status] || esc(c.status)}</span>` : ''}</h3>
+    <p>${esc(c.teacher)}${c.subject ? ' • ' + esc(c.subject) : ''} • ${c.chapters} चैप्टर</p>
+    <p class="price">${c.price > 0 ? '₹' + c.price : 'फ्री'}</p></div>`;
+}
+
+async function allCourses() {
+  const r = await api('listCourses'); if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>सभी कोर्स</h2>
+    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
+                       : '<p class="muted">अभी कोई कोर्स पब्लिश नहीं हुआ है।</p>'}`);
+}
+
+async function myCourses() {
+  const r = await api('myEnrollments'); if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>मेरे कोर्स</h2>
+    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `openCourse('${c.id}')`)).join('')}</div>`
+                       : '<p class="muted">आपने अभी कोई कोर्स शुरू नहीं किया। <a href="#" onclick="allCourses();return false">कोर्स देखें</a></p>'}`);
+}
+
+// ================= कोर्स देखना (प्लेयर + PDF) =================
+let CUR = null;
+async function openCourse(id) {
+  const r = await api('getCourse', { courseId: id }); if (!r.ok) return alert(r.error);
+  CUR = r;
+  const c = r.course;
+  let action = '';
+  if (!r.access) {
+    if (c.price === 0 && r.role === 'student') action = `<button class="btn green" onclick="enroll('${c.id}')">फ्री में शुरू करें</button>`;
+    else if (r.role === 'student') action = `<p class="price" style="margin-top:12px">₹${c.price} — पेमेंट की सुविधा जल्द आ रही है</p>`;
+  }
+  app(`${backBtn()}
+    <div class="card">
+      <h2>${esc(c.title)} ${r.canEdit ? `<span class="badge ${esc(c.status)}">${statusName[c.status] || ''}</span>` : ''}</h2>
+      <p class="muted">${esc(c.teacher)}${c.subject ? ' • ' + esc(c.subject) : ''} • <span class="price">${c.price > 0 ? '₹' + c.price : 'फ्री'}</span></p>
+      <p style="margin-top:10px;white-space:pre-line">${esc(c.description)}</p>
+      ${action}
+      ${r.canEdit ? `<button class="btn gray" onclick="courseEditor('${c.id}')">✏️ एडिट करें</button>` : ''}
+    </div>
+    <div id="viewer"></div>
+    <div class="card"><h3 style="margin-bottom:6px">चैप्टर</h3>
+      ${r.chapters.length ? r.chapters.map((ch, i) => `<div class="row ch" id="ch${i}" onclick="${r.access ? `play(${i})` : ''}">
+          <span>${r.access ? '▶️' : '🔒'} ${i + 1}. ${esc(ch.title)}</span>
+          <span class="muted">${ch.hasVideo ? '🎬' : ''} ${ch.hasPdf ? '📄' : ''}</span></div>`).join('')
+        : '<p class="muted">अभी कोई चैप्टर नहीं है।</p>'}
+    </div>`);
+  if (r.access && r.chapters.length) play(0);
+}
+
+function play(i) {
+  const ch = CUR.chapters[i];
+  document.querySelectorAll('.ch').forEach(el => el.classList.remove('active'));
+  const el = $('ch' + i); if (el) el.classList.add('active');
+  let html = `<div class="card"><h3 style="margin-bottom:10px">${i + 1}. ${esc(ch.title)}</h3>`;
+  if (ch.video) html += `<div class="player">
+      <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(ch.video)}?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="shield-top"></div><div class="shield-br"></div></div>`;
+  if (ch.pdf) html += `<div class="pdfbox">
+      <iframe src="https://drive.google.com/file/d/${encodeURIComponent(ch.pdf)}/preview"></iframe>
+      <div class="shield-pdf"></div></div>`;
+  $('viewer').innerHTML = html + '</div>';
+  $('viewer').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function enroll(id) {
+  const r = await api('enrollFree', { courseId: id });
+  if (r.ok) openCourse(id); else alert(r.error);
+}
+
+// ================= टीचर: कोर्स बनाना / एडिट =================
+async function teacherCourses() {
+  const r = await api('teacherCourses'); if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>मेरे बनाए कोर्स</h2>
+    <button class="btn" onclick="courseForm()">➕ नया कोर्स</button>
+    ${r.courses.length ? `<div class="grid">${r.courses.map(c => cardHtml(c, `courseEditor('${c.id}')`, true)).join('')}</div>`
+                       : '<p class="muted" style="margin-top:12px">अभी कोई कोर्स नहीं बनाया।</p>'}`);
+}
+
+function courseForm(c) {
+  c = c || {};
+  app(`${backBtn(c.id ? `courseEditor('${c.id}')` : 'home()')}
+    <div class="card narrow" style="max-width:600px">
+      <h2>${c.id ? 'कोर्स की जानकारी बदलें' : 'नया कोर्स बनाएँ'}</h2>
+      <form onsubmit="saveCourse(event,'${c.id || ''}')">
+        <label>कोर्स का नाम *</label><input id="cTitle" required value="${esc(c.title)}">
+        <label>विषय (जैसे गणित, अंग्रेज़ी)</label><input id="cSubject" value="${esc(c.subject)}">
+        <label>कोर्स के बारे में</label><textarea id="cDesc">${esc(c.description)}</textarea>
+        <label>कीमत (₹) — फ्री के लिए 0 लिखें</label><input id="cPrice" type="number" min="0" value="${c.price ?? 0}">
+        <label>थंबनेल फ़ोटो का लिंक (ज़रूरी नहीं)</label><input id="cThumb" value="${esc(c.thumb)}">
+        <button class="btn full" type="submit">सेव करें</button>
+      </form><div id="cmsg"></div>
+    </div>`);
+}
+
+async function saveCourse(e, id) {
+  e.preventDefault();
+  const r = await api('saveCourse', { courseId: id, title: $('cTitle').value, subject: $('cSubject').value,
+    description: $('cDesc').value, price: $('cPrice').value, thumb: $('cThumb').value });
+  if (r.ok) courseEditor(r.courseId); else msg('cmsg', r.error, false);
+}
+
+async function courseEditor(id) {
+  const r = await api('getCourse', { courseId: id }); if (!r.ok) return alert(r.error);
+  CUR = r; const c = r.course;
+  const canSubmit = c.status === 'draft' || c.status === 'rejected';
+  app(`${backBtn(USER.role === 'admin' ? 'home()' : 'teacherCourses()')}
+    <div class="card">
+      <h2>${esc(c.title)} <span class="badge ${esc(c.status)}">${statusName[c.status] || esc(c.status)}</span></h2>
+      <p class="muted">${c.subject ? esc(c.subject) + ' • ' : ''}<span class="price">${c.price > 0 ? '₹' + c.price : 'फ्री'}</span></p>
+      ${c.status === 'rejected' ? '<p class="msg err">एडमिन ने ये कोर्स रिजेक्ट किया है। बदलाव करके फिर से भेजें।</p>' : ''}
+      ${c.status === 'pending' ? '<p class="msg ok">कोर्स एडमिन के पास मंज़ूरी के लिए गया है।</p>' : ''}
+      <button class="btn gray" onclick='courseForm(${JSON.stringify(c).replace(/'/g, "&#39;")})'>✏️ जानकारी बदलें</button>
+      <button class="btn" onclick="openCourse('${c.id}')">👁️ प्रीव्यू</button>
+      ${canSubmit ? `<button class="btn green" onclick="submitCourse('${c.id}')">📤 मंज़ूरी के लिए भेजें</button>` : ''}
+    </div>
+    <div class="card"><h3>चैप्टर (${r.chapters.length})</h3>
+      ${r.chapters.map((ch, i) => `<div class="row"><span>${i + 1}. ${esc(ch.title)} <span class="muted">${ch.hasVideo ? '🎬' : ''} ${ch.hasPdf ? '📄' : ''}</span></span>
+        <button class="btn red sm" onclick="delChapter('${ch.id}','${c.id}')">हटाएँ</button></div>`).join('') || '<p class="muted">अभी कोई चैप्टर नहीं है।</p>'}
+    </div>
+    <div class="card"><h3>नया चैप्टर जोड़ें</h3>
+      <form onsubmit="addChapter(event,'${c.id}')">
+        <label>चैप्टर का नाम *</label><input id="chTitle" required>
+        <label>YouTube वीडियो का लिंक</label><input id="chVideo" placeholder="https://youtu.be/...">
+        <label>Drive PDF का लिंक (Anyone with the link पर शेयर हो)</label><input id="chPdf" placeholder="https://drive.google.com/file/d/...">
+        <button class="btn full" type="submit">चैप्टर जोड़ें</button>
+      </form><div id="chmsg"></div>
+    </div>`);
+}
+
+async function addChapter(e, cid) {
+  e.preventDefault();
+  const r = await api('addChapter', { courseId: cid, title: $('chTitle').value, video: $('chVideo').value, pdf: $('chPdf').value });
+  if (r.ok) courseEditor(cid); else msg('chmsg', r.error, false);
+}
+
+async function delChapter(chid, cid) {
+  if (!confirm('ये चैप्टर हटाना है?')) return;
+  const r = await api('deleteChapter', { chapterId: chid });
+  if (r.ok) courseEditor(cid); else alert(r.error);
+}
+
+async function submitCourse(cid) {
+  const r = await api('submitCourse', { courseId: cid });
+  if (r.ok) courseEditor(cid); else alert(r.error);
+}
+
+// ================= एडमिन =================
+function teacherForm() {
+  app(`${backBtn()}<div class="card narrow" style="max-width:500px">
+    <h2>नया टीचर जोड़ें</h2>
+    <form onsubmit="createTeacher(event)">
+      <label>नाम *</label><input id="tName" required>
+      <label>ईमेल *</label><input id="tEmail" type="email" required>
+      <label>मोबाइल</label><input id="tPhone" type="tel">
+      <label>पासवर्ड * (कम से कम 6 अक्षर)</label><input id="tPass" minlength="6" required>
+      <button class="btn full" type="submit">टीचर अकाउंट बनाएँ</button>
+    </form><div id="tmsg"></div></div>`);
+}
+
+async function createTeacher(e) {
+  e.preventDefault();
+  const r = await api('createTeacher', { name: $('tName').value, email: $('tEmail').value, phone: $('tPhone').value, password: $('tPass').value });
+  if (r.ok) { msg('tmsg', 'टीचर अकाउंट बन गया! ईमेल और पासवर्ड टीचर को भेज दें।', true); e.target.reset(); }
+  else msg('tmsg', r.error, false);
+}
+
+async function pendingCourses() {
+  const r = await api('adminPending'); if (!r.ok) return alert(r.error);
+  app(`${backBtn()}<h2>मंज़ूरी के लिए कोर्स</h2>
+    <div class="card">${r.courses.map(c => `<div class="row">
+      <span><b>${esc(c.title)}</b><br><span class="muted">${esc(c.teacher)} • ${c.chapters} चैप्टर • ${c.price > 0 ? '₹' + c.price : 'फ्री'}</span></span>
+      <span style="white-space:nowrap">
+        <button class="btn sm" onclick="openCourse('${c.id}')">देखें</button>
+        <button class="btn green sm" onclick="setStatus('${c.id}','published')">मंज़ूर</button>
+        <button class="btn red sm" onclick="setStatus('${c.id}','rejected')">रिजेक्ट</button>
+      </span></div>`).join('') || '<p class="muted">कोई कोर्स मंज़ूरी के लिए नहीं है।</p>'}</div>`);
+}
+
+async function setStatus(cid, status) {
+  if (!confirm(status === 'published' ? 'ये कोर्स पब्लिश करना है?' : 'ये कोर्स रिजेक्ट करना है?')) return;
+  const r = await api('setCourseStatus', { courseId: cid, status });
+  if (r.ok) pendingCourses(); else alert(r.error);
+}
+
+// ================= शुरुआत =================
 (async () => {
-  const token = localStorage.getItem('token');
-  if (!token) return;
+  if (!localStorage.getItem('token')) return authView();
   try {
-    const r = await api('me', { token });
-    if (r.ok) showDash(r.user); else localStorage.removeItem('token');
-  } catch (e) {}
+    const r = await api('me');
+    if (r.ok) { USER = r.user; home(); } else authView();
+  } catch (e) { if (!USER) authView(); }
 })();
 </script>
 </body>
